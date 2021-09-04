@@ -1,12 +1,15 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/kj5xm/task-manager/handlers"
+	dbutil "github.com/kj5xm/task-manager/lib/dbutils"
+	"github.com/kj5xm/task-manager/lib/logger"
 	"github.com/kj5xm/task-manager/services"
 )
 
@@ -16,9 +19,15 @@ const (
 )
 
 func main() {
+	db, err := dbutil.GetDB()
+	if err != nil {
+		log.Panic(err)
+	}
+	defer db.Close()
+
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
-	//r.Use(logger.NewMiddlewareLogger())
+	r.Use(logger.NewMiddlewareLogger())
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RedirectSlashes)
 	r.Use(middleware.Timeout(Timeout * time.Second))
@@ -27,6 +36,7 @@ func main() {
 	taskHandler := handlers.TaskHandler{
 		TaskService: services.TaskService{},
 	}
+	taskHandler.Init(db)
 
 	r.Post("/tasks", taskHandler.CreateTask)
 	r.Get("/tasks", taskHandler.GetTasks)
@@ -35,6 +45,6 @@ func main() {
 	r.Delete("/tasks/:id", taskHandler.DeleteTaskByID)
 
 	http.ListenAndServe(":8080", r)
-	//logger.Info("Init", "Server started")
+	logger.Info("Init", "Server started")
 
 }
