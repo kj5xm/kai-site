@@ -2,8 +2,8 @@
 This is a personal website for my friends and myself to write blogs.
 
 ## Tech Stack:
-- Golang
-- Go Chi
+- Golang (Go-chi)
+- ReactJS
 - Postgres
 
 ## Ability:
