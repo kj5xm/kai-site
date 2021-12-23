@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kj5xm/task-manager/lib/logger"
@@ -13,10 +14,22 @@ type CreateTaskRequest struct {
 	Size int `json:"size"`
 }
 
-func (s *TaskService) CreateTask(request CreateTaskRequest) {
+type CreateTaskResponse struct {
+	Size       int
+	Price      string
+	CreateDate time.Time
+}
+
+func (s *TaskService) CreateTask(request CreateTaskRequest) (*CreateTaskResponse, error) {
 	logger.Info("MakePizza", "Creating pizza")
 
-	return &CreateTaskResponse{
-		ID: 
+	if request.Size > 10 {
+		return nil, fmt.Errorf("pizza too big")
 	}
+
+	return &CreateTaskResponse{
+		Size:       request.Size,
+		Price:      "$10",
+		CreateDate: time.Now(),
+	}, nil
 }

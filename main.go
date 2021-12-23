@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -24,6 +25,11 @@ func main() {
 		log.Panic(err)
 	}
 	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected!")
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)

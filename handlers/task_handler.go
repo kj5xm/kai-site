@@ -16,7 +16,7 @@ type TaskHandler struct {
 }
 
 func (s *TaskHandler) Init(db *sql.DB) {
-	
+
 }
 
 func (s *TaskHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
